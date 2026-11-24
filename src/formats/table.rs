@@ -1,0 +1,97 @@
+//! The file-type table. Order matters for `by_ext` (first match wins), so every extension appears
+//! once.
+
+use super::FileType;
+use crate::model::Category::{self, *};
+
+const fn t(id: &'static str, label: &'static str, category: Category, exts: &'static [&'static str], mime: &'static str) -> FileType {
+    FileType { id, label, category, exts, mime }
+}
+
+pub(super) const T: &[FileType] = &[
+    // ---------------------------------------------------------------------------------- photos
+    t("jpg", "JPEG image", Photo, &["jpg", "jpeg", "jpe", "jfif"], "image/jpeg"),
+    t("png", "PNG image", Photo, &["png", "apng"], "image/png"),
+    t("gif", "GIF image", Photo, &["gif"], "image/gif"),
+    t("bmp", "BMP image", Photo, &["bmp", "dib"], "image/bmp"),
+    t("webp", "WebP image", Photo, &["webp"], "image/webp"),
+    t("tiff", "TIFF image", Photo, &["tiff", "tif"], "image/tiff"),
+    t("heic", "HEIC photo", Photo, &["heic", "heif", "hif"], "image/heic"),
+    t("avif", "AVIF image", Photo, &["avif"], "image/avif"),
+    t("psd", "Photoshop image", Photo, &["psd", "psb"], "image/vnd.adobe.photoshop"),
+    t("ico", "Icon", Photo, &["ico", "cur"], "image/x-icon"),
+    t("svg", "SVG drawing", Photo, &["svg"], "image/svg+xml"),
+    t("cr2", "Canon RAW photo (CR2)", Photo, &["cr2"], "image/x-canon-cr2"),
+    t("cr3", "Canon RAW photo (CR3)", Photo, &["cr3"], "image/x-canon-cr3"),
+    t("nef", "Nikon RAW photo", Photo, &["nef"], "image/x-nikon-nef"),
+    t("nrw", "Nikon RAW photo (NRW)", Photo, &["nrw"], "image/x-nikon-nrw"),
+    t("arw", "Sony RAW photo", Photo, &["arw"], "image/x-sony-arw"),
+    t("srf", "Sony RAW photo (SRF)", Photo, &["srf"], "image/x-sony-srf"),
+    t("sr2", "Sony RAW photo (SR2)", Photo, &["sr2"], "image/x-sony-sr2"),
+    t("dng", "DNG RAW photo", Photo, &["dng"], "image/x-adobe-dng"),
+    t("orf", "Olympus RAW photo", Photo, &["orf"], "image/x-olympus-orf"),
+    t("rw2", "Panasonic RAW photo", Photo, &["rw2", "raw"], "image/x-panasonic-rw2"),
+    t("raf", "Fujifilm RAW photo", Photo, &["raf"], "image/x-fuji-raf"),
+    t("pef", "Pentax RAW photo", Photo, &["pef"], "image/x-pentax-pef"),
+    t("x3f", "Sigma RAW photo", Photo, &["x3f"], "image/x-sigma-x3f"),
+    // ----------------------------------------------------------------------------------- video
+    t("mp4", "MP4 video", Video, &["mp4", "f4v"], "video/mp4"),
+    t("m4v", "M4V video", Video, &["m4v"], "video/x-m4v"),
+    t("mov", "QuickTime video", Video, &["mov", "qt"], "video/quicktime"),
+    t("3gp", "3GP video", Video, &["3gp", "3g2", "3gpp"], "video/3gpp"),
+    t("avi", "AVI video", Video, &["avi"], "video/x-msvideo"),
+    t("mkv", "Matroska video", Video, &["mkv", "mk3d", "mka"], "video/x-matroska"),
+    t("webm", "WebM video", Video, &["webm"], "video/webm"),
+    t("wmv", "Windows Media video", Video, &["wmv", "asf"], "video/x-ms-wmv"),
+    t("flv", "Flash video", Video, &["flv"], "video/x-flv"),
+    t("mpg", "MPEG video", Video, &["mpg", "mpeg", "mpe", "vob", "m2v"], "video/mpeg"),
+    t("ts", "MPEG transport stream", Video, &["ts"], "video/mp2t"),
+    t("mts", "AVCHD video", Video, &["mts", "m2ts", "m2t"], "video/mp2t"),
+    // ----------------------------------------------------------------------------------- audio
+    t("mp3", "MP3 audio", Audio, &["mp3", "mp2", "mpga"], "audio/mpeg"),
+    t("wav", "WAV audio", Audio, &["wav", "wave"], "audio/wav"),
+    t("flac", "FLAC audio", Audio, &["flac"], "audio/flac"),
+    t("ogg", "Ogg audio", Audio, &["ogg", "oga", "ogv"], "audio/ogg"),
+    t("opus", "Opus audio", Audio, &["opus"], "audio/opus"),
+    t("m4a", "M4A audio", Audio, &["m4a", "m4b", "m4p"], "audio/mp4"),
+    t("aac", "AAC audio", Audio, &["aac", "adts"], "audio/aac"),
+    t("wma", "Windows Media audio", Audio, &["wma"], "audio/x-ms-wma"),
+    t("amr", "AMR voice recording", Audio, &["amr", "awb"], "audio/amr"),
+    t("aiff", "AIFF audio", Audio, &["aiff", "aif", "aifc"], "audio/aiff"),
+    t("mid", "MIDI music", Audio, &["mid", "midi", "kar"], "audio/midi"),
+    // ------------------------------------------------------------------------------- documents
+    t("pdf", "PDF document", Document, &["pdf"], "application/pdf"),
+    t("docx", "Word document", Document, &["docx", "docm", "dotx"], "application/vnd.openxmlformats-officedocument.wordprocessingml.document"),
+    t("xlsx", "Excel workbook", Document, &["xlsx", "xlsm", "xltx"], "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
+    t("pptx", "PowerPoint presentation", Document, &["pptx", "pptm", "ppsx"], "application/vnd.openxmlformats-officedocument.presentationml.presentation"),
+    t("doc", "Word 97-2003 document", Document, &["doc", "dot", "wps"], "application/msword"),
+    t("xls", "Excel 97-2003 workbook", Document, &["xls", "xlt"], "application/vnd.ms-excel"),
+    t("ppt", "PowerPoint 97-2003 presentation", Document, &["ppt", "pps", "pot"], "application/vnd.ms-powerpoint"),
+    t("odt", "OpenDocument text", Document, &["odt"], "application/vnd.oasis.opendocument.text"),
+    t("ods", "OpenDocument spreadsheet", Document, &["ods"], "application/vnd.oasis.opendocument.spreadsheet"),
+    t("odp", "OpenDocument presentation", Document, &["odp"], "application/vnd.oasis.opendocument.presentation"),
+    t("rtf", "Rich Text document", Document, &["rtf"], "application/rtf"),
+    t("txt", "Text file", Document, &["txt", "log", "text"], "text/plain"),
+    t("csv", "CSV table", Document, &["csv", "tsv"], "text/csv"),
+    t("html", "Web page", Document, &["html", "htm", "xhtml", "mht"], "text/html"),
+    t("xml", "XML file", Document, &["xml"], "application/xml"),
+    t("json", "JSON file", Document, &["json"], "application/json"),
+    t("epub", "EPUB e-book", Document, &["epub"], "application/epub+zip"),
+    t("msg", "Outlook message", Document, &["msg"], "application/vnd.ms-outlook"),
+    t("eml", "E-mail message", Document, &["eml"], "message/rfc822"),
+    t("pst", "Outlook data file", Document, &["pst", "ost"], "application/vnd.ms-outlook-pst"),
+    // -------------------------------------------------------------------------------- archives
+    t("zip", "ZIP archive", Archive, &["zip", "jar", "apk", "zipx"], "application/zip"),
+    t("rar", "RAR archive", Archive, &["rar"], "application/vnd.rar"),
+    t("7z", "7-Zip archive", Archive, &["7z"], "application/x-7z-compressed"),
+    t("gz", "GZIP archive", Archive, &["gz", "tgz", "gzip"], "application/gzip"),
+    t("bz2", "BZIP2 archive", Archive, &["bz2", "tbz2", "tbz"], "application/x-bzip2"),
+    t("xz", "XZ archive", Archive, &["xz", "txz"], "application/x-xz"),
+    t("tar", "TAR archive", Archive, &["tar"], "application/x-tar"),
+    t("cab", "Cabinet archive", Archive, &["cab"], "application/vnd.ms-cab-compressed"),
+    t("iso", "Disc image", Archive, &["iso"], "application/x-iso9660-image"),
+    // ----------------------------------------------------------------------------------- other
+    t("sqlite", "SQLite database", Other, &["sqlite", "sqlite3", "db", "db3"], "application/vnd.sqlite3"),
+    t("exe", "Program", Other, &["exe", "scr", "com"], "application/vnd.microsoft.portable-executable"),
+    t("dll", "Program library", Other, &["dll", "sys", "ocx", "cpl"], "application/vnd.microsoft.portable-executable"),
+];

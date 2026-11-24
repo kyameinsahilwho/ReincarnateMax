@@ -1,0 +1,7 @@
+/target/
+/dist/
+/bench/*.exe
+/gen/schemas/
+/scratch/
+/testdata/downloads/
+*.maxscan-journal

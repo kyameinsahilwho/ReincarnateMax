@@ -1,0 +1,81 @@
+[package]
+name = "max-recovery"
+version = "0.1.0"
+edition = "2021"
+description = "MAX File Recovery - find, preview and safely restore lost files on Windows"
+build = "build.rs"
+
+[[bin]]
+name = "max-recovery"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+rayon = "1"
+# One SQLite file per scan session: results, map ranges, log and checkpoints (crash-safe, resumable,
+# filter/sort/paging in SQL). "bundled" compiles sqlite3.c with MinGW gcc, so no system SQLite is needed.
+rusqlite = { version = "0.37", features = ["bundled"] }
+blake3 = "1"
+image = { version = "0.25", default-features = false, features = ["jpeg", "png", "gif", "webp", "bmp", "tiff"] }
+zip = { version = "2", default-features = false, features = ["deflate"] }
+flate2 = "1"
+crc32fast = "1"
+base64 = "0.22"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt", "std"] }
+
+[dependencies.windows-sys]
+version = "0.59"
+features = [
+  "Win32_Foundation",
+  "Win32_Globalization",
+  "Win32_Storage_FileSystem",
+  "Win32_System_IO",
+  "Win32_System_Ioctl",
+  "Win32_UI_Shell",
+  "Win32_UI_WindowsAndMessaging",
+  "Win32_Security",
+  "Win32_Security_Authorization",
+  "Win32_System_Threading",
+  "Win32_System_Com",
+  "Win32_System_Registry",
+  "Win32_System_SystemInformation",
+  "Win32_System_SystemServices",
+  "Win32_System_Ole",
+  "Win32_System_Variant",
+  "Win32_System_Memory",
+  "Win32_System_Diagnostics_Debug",
+  "Win32_NetworkManagement_WNet",
+  "Win32_UI_Shell_Common",
+  "Win32_Graphics_Gdi",
+  "Win32_System_ProcessStatus",
+  "Wdk_Foundation",
+  "Wdk_Storage_FileSystem",
+]
+
+[dev-dependencies]
+# Builds real FAT12/16/32 images in memory for the FAT engine tests.
+fatfs = "0.3"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
+
+[profile.dev.package."*"]
+# Dependencies optimized even in debug builds: image decoding, blake3 and SQLite are 10-50x slower at
+# opt-level 0, which made debug scans unusable for testing.
+opt-level = 2
+
+[profile.release]
+opt-level = 3
+# Shipped build: fat LTO + 1 codegen unit (smaller exe, same startup — measured on Platter 2026-11-23).
+lto = "fat"
+codegen-units = 1
+panic = "unwind"
+strip = true
