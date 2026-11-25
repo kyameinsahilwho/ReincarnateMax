@@ -3,6 +3,10 @@
 **MAX File Recovery is a free Windows data recovery app that finds deleted, lost and formatted files on NTFS, FAT and exFAT drives, memory cards and disk images, shows how intact each file is, previews it, and copies it to another drive without ever writing to the source.**
 
 <p align="center">
+  <a href="https://github.com/kyameinsahilwho/ReincarnateMax/releases"><img alt="Download for Windows" src="https://img.shields.io/badge/Download_for_Windows-0.1.0_preview-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>
+</p>
+
+<p align="center">
   <img alt="Platform: Windows" src="https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white">
   <img alt="Built with Rust" src="https://img.shields.io/badge/Rust-2021-000000?logo=rust&logoColor=white">
   <img alt="Tauri v2" src="https://img.shields.io/badge/Tauri-v2-24C8DB?logo=tauri&logoColor=white">
@@ -79,9 +83,20 @@ Privacy and safety facts from the code:
 - MAX has no account and no telemetry. Its only network request is an optional update check, which does nothing until you enter an `https://` release feed in Settings. It never downloads or runs an update; it only opens the release page.
 - Fonts and UI assets ship inside the app, so the interface loads nothing from the internet.
 
+## Download
+
+Get **MAX File Recovery 0.1.0 (preview)** from [GitHub Releases](https://github.com/kyameinsahilwho/ReincarnateMax/releases). It is a pre-release: see [Project status](#project-status) for what has and has not been tested yet.
+
+- **File**: `MAX-File-Recovery_0.1.0_x64-setup.exe` (about 4.4 MB).
+- **Requirements**: Windows 10 or 11, 64-bit (x64). The installer downloads the WebView2 runtime if it is missing (needs an internet connection).
+- **Per-user install**: it installs to `%LOCALAPPDATA%\MAX File Recovery` by default, without a UAC prompt.
+- **SmartScreen**: the installer is not code-signed, so Windows may show "Windows protected your PC". Click **More info**, then **Run anyway**.
+- **Administrator rights**: scanning a real drive needs them, because Windows only lets administrators read drives directly. MAX asks for them each time it starts. You can turn the prompt off in Settings and still open disk images.
+- **Always recover to a different drive** than the one you are recovering from. MAX refuses a destination on the physical disk you are scanning (or inside the disk image).
+
 ## Quick start
 
-There are no published release binaries yet, so build MAX from source on Windows.
+To build MAX from source on Windows instead of using the installer:
 
 ### Requirements
 
@@ -104,7 +119,7 @@ Notes:
 
 - `.cargo/config.toml` sets `target-dir = "D:/maxrecovery-target"` (outside the project) because MinGW `windres` fails when the target path contains a space. Change it to a space-free path on a drive you have, or delete the setting if your clone path has no spaces.
 - MAX asks for administrator rights at startup because Windows only lets administrators read drives directly. Disk images can be scanned without elevation.
-- The installer is unsigned, so SmartScreen will warn on other PCs. It installs per user to `%LOCALAPPDATA%\MAX File Recovery` without a UAC prompt. For shared PCs, set `bundle.windows.nsis.installMode` to `perMachine` in `tauri.conf.json` and rebuild.
+- The installer installs per user (see [Download](#download)). For shared PCs, set `bundle.windows.nsis.installMode` to `perMachine` in `tauri.conf.json` and rebuild.
 
 ### UI without Rust
 
